@@ -19,7 +19,7 @@ BEGIN {
   print "1..$tests\n";
 }
 END {print "not ok 1\n" unless $loaded;}
-use Clone;
+use Clone::AsUTF8Bytes;
 $loaded = 1;
 print "ok 1\n";
 
@@ -47,7 +47,7 @@ use strict;
 
 package Test::Hash;
 
-@Test::Hash::ISA = qw( Clone );
+@Test::Hash::ISA = qw( Clone::AsUTF8Bytes );
 
 sub new()
 {
@@ -64,7 +64,7 @@ my ($master, $clone1);
 
 my $a = Test::Hash->new();
 
-my $b = $a->clone;
+my $b = $a->clone_as_utf8_bytes;
 my $c = dclone($a);
 
 if ($has_data_dumper) {

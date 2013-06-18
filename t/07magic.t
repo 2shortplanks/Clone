@@ -2,7 +2,7 @@
 
 use strict;
 
-use Clone;
+use Clone::AsUTF8Bytes;
 use Test::More tests => 3;
 
 SKIP: {
@@ -16,7 +16,7 @@ SKIP: {
     my $x = { a => "worked\n" }; 
     my $y = $x;
     weaken($y);
-    my $z = Clone::clone($x);
+    my $z = Clone::AsUTF8Bytes::clone_as_utf8_bytes($x);
     ok( Dumper($x) eq Dumper($z), "Cloned weak reference");
   }
 
@@ -33,7 +33,7 @@ SKIP: {
           substr ($string, 0, 4),
           substr ($string, 4),
         );
-    my $z = Clone::clone($string);
+    my $z = Clone::AsUTF8Bytes::clone_as_utf8_bytes($string);
     ok( Dumper($string) eq Dumper($z), "Cloned magic utf8");
   }
 }
@@ -48,7 +48,7 @@ SKIP: {
     $x = $ENV{$_};
     last if ( $x && length($x) > 0 );
   }
-  my $y = Clone::clone($x);
+  my $y = Clone::AsUTF8Bytes::clone_as_utf8_bytes($x);
   ## ok(Clone::clone($tainted), "Tainted input");
   ok( Dumper($x) eq Dumper($y), "Tainted input");
 }

@@ -9,7 +9,7 @@
 
 BEGIN { $| = 1; print "1..5\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use Clone qw( clone );
+use Clone::AsUTF8Bytes qw( clone_as_utf8_bytes );
 $loaded = 1;
 print "ok 1\n";
 
@@ -29,7 +29,7 @@ $a{b} = 1;
 
 my $b = [\%a, \@a, \$a]; 
 
-my $c = clone($b);
+my $c = clone_as_utf8_bytes($b);
 
 my $d1 = &dump($b);
 my $d2 = &dump($c);

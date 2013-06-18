@@ -19,7 +19,7 @@ BEGIN {
  print "1..$tests\n";
 }
 END {print "not ok 1\n" unless $loaded;}
-use Clone qw( clone );
+use Clone::AsUTF8Bytes qw( clone_as_utf8_bytes );
 $loaded = 1;
 print "ok 1\n";
 
@@ -33,7 +33,7 @@ package Test::Array;
 
 use vars @ISA;
 
-@ISA = qw(Clone);
+@ISA = qw(Clone::AsUTF8Bytes);
 
 sub new
   {
@@ -57,8 +57,8 @@ my $a = Test::Array->new(
       ],
     ],
   );
-my $b = $a->clone(0);
-my $c = $a->clone(2);
+my $b = $a->clone_as_utf8_bytes(0);
+my $c = $a->clone_as_utf8_bytes(2);
 
 # TEST 2
 $b->[1][0] eq 'two' ? ok : not_ok;
@@ -74,7 +74,7 @@ $c->[1][1][1] == $a->[1][1][1] ? ok : not_ok;
 
 my @circ = ();
 $circ[0] = \@circ;
-$aref = clone(\@circ);
+$aref = clone_as_utf8_bytes(\@circ);
 
 if ($has_data_dumper) {
   Dumper(\@circ) eq Dumper($aref) ? ok : not_ok;
@@ -83,6 +83,6 @@ if ($has_data_dumper) {
 # test for unicode support
 {
   my $a = [ chr(256) => 1 ];
-  my $b = clone( $a );
+  my $b = clone_as_utf8_bytes( $a );
   ord( $a->[0] ) == ord( $b->[0] ) ? ok : not_ok;
 }

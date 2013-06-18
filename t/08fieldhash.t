@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Clone 'clone';
+use Clone::AsUTF8Bytes 'clone_as_utf8_bytes';
 
 BEGIN {
   use Test::More;
@@ -22,7 +22,7 @@ my $var = {};
 
 exists $hash{ \$var };
 
-my $cloned = clone($var);
+my $cloned = clone_as_utf8_bytes($var);
 cmp_ok($cloned, '!=', $var);
 
 done_testing;

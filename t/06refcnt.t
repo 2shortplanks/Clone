@@ -25,7 +25,7 @@ BEGIN {
   print "1..$plan\n";
 }
 END {print "not ok 1\n" unless $loaded;}
-use Clone qw( clone );
+use Clone::AsUTF8Bytes qw( clone_as_utf8_bytes );
 $loaded = 1;
 print "ok 1\n";
 
@@ -39,7 +39,7 @@ print "ok 1\n";
 
 ## use Benchmark;
 ## use Data::Dumper;
-# use Storable qw( dclone );
+# use Storable qw( dclone_as_utf8_bytes );
 
 $^W = 1;
 $test = 2;
@@ -51,7 +51,7 @@ use strict;
 
 package Test::Hash;
 
-@Test::Hash::ISA = qw( Clone );
+@Test::Hash::ISA = qw( Clone::AsUTF8Bytes );
 
 sub new()
 {
@@ -73,21 +73,21 @@ package main;
 
 {
   my $a = Test::Hash->new();
-  my $b = $a->clone;
+  my $b = $a->clone_as_utf8_bytes;
   # my $c = dclone($a);
 }
 
 # benchmarking bug
 {
   my $a = Test::Hash->new();
-  my $sref = sub { my $b = clone($a) };
+  my $sref = sub { my $b = clone_as_utf8_bytes($a) };
   $sref->();
 }
 
 # test for cloning unblessed ref
 {
   my $a = {};
-  my $b = clone($a);
+  my $b = clone_as_utf8_bytes($a);
   bless $a, 'Test::Hash';
   bless $b, 'Test::Hash';
 }
@@ -95,7 +95,7 @@ package main;
 # test for cloning unblessed ref
 {
   my $a = [];
-  my $b = clone($a);
+  my $b = clone_as_utf8_bytes($a);
   bless $a, 'Test::Hash';
   bless $b, 'Test::Hash';
 }
@@ -104,7 +104,7 @@ package main;
 {
   my $a = 1;
   $a = [];
-  my $b = clone($a);
+  my $b = clone_as_utf8_bytes($a);
   bless $a, 'Test::Hash';
   bless $b, 'Test::Hash';
 }
@@ -113,7 +113,7 @@ package main;
 {
   my $a = '';
   $a = [];
-  my $b = clone($a);
+  my $b = clone_as_utf8_bytes($a);
   bless $a, 'Test::Hash';
   bless $b, 'Test::Hash';
 }
@@ -122,7 +122,7 @@ package main;
 {
   my $a = *STDOUT;
   $a = [];
-  my $b = clone($a);
+  my $b = clone_as_utf8_bytes($a);
   bless $a, 'Test::Hash';
   bless $b, 'Test::Hash';
 }
@@ -134,7 +134,7 @@ if ( $HAS_WEAKEN ) {
     my $b = { r => $a };
     $a->{r} = $b;
     weaken($b->{'r'});
-    my $c = clone($a);
+    my $c = clone_as_utf8_bytes($a);
   }
 
   # another weak reference problem, this one causes a segfault in 0.24
@@ -146,7 +146,7 @@ if ( $HAS_WEAKEN ) {
       weaken($b->[0]);
       weaken($b->[1]);
     }
-    my $c = clone($a);
+    my $c = clone_as_utf8_bytes($a);
     # check that references point to the same thing
     print  "not " unless $c->{'r'}[0] == $c->{'r'}[1];
     printf "ok %d\n", $::test++;

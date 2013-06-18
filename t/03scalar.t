@@ -19,7 +19,7 @@ BEGIN {
   print "1..$tests\n";
 }
 END {print "not ok 1\n" unless $loaded;}
-use Clone qw( clone );
+use Clone::AsUTF8Bytes qw( clone_as_utf8_bytes );
 $loaded = 1;
 print "ok 1\n";
 
@@ -33,7 +33,7 @@ package Test::Scalar;
 
 use vars @ISA;
 
-@ISA = qw(Clone);
+@ISA = qw(Clone::AsUTF8Bytes);
 
 sub new
   {
@@ -49,7 +49,7 @@ sub DESTROY
   }
 
 package main;
-                                                
+
 sub ok     { print "ok $test\n"; $test++ }
 sub not_ok { print "not ok $test\n"; $test++ }
 
@@ -57,39 +57,39 @@ $^W = 0;
 $test = 2;
 
 my $a = Test::Scalar->new(1.0);
-my $b = $a->clone(1);
+my $b = $a->clone_as_utf8_bytes(1);
 
 $$a == $$b ? ok : not_ok;
 $a != $b ? ok : not_ok;
 
 my $c = \"test 2 scalar";
-my $d = Clone::clone($c, 2);
+my $d = Clone::AsUTF8Bytes::clone_as_utf8_bytes($c, 2);
 
 $$c == $$d ? ok : not_ok;
 $c != $d ? ok : not_ok;
 
 my $circ = undef;
 $circ = \$circ;
-$aref = clone($circ);
+$aref = clone_as_utf8_bytes($circ);
 if ($has_data_dumper) {
   Dumper($circ) eq Dumper($aref) ? ok : not_ok;
 }
 
 # the following used to produce a segfault, rt.cpan.org id=2264
 undef $a;
-$b = clone($a);
+$b = clone_as_utf8_bytes($a);
 $$a == $$b ? ok : not_ok;
 
 # used to get a segfault cloning a ref to a qr data type.
 my $str = 'abcdefg';
 my $qr = qr/$str/;
-my $qc = clone( $qr );
+my $qc = clone_as_utf8_bytes( $qr );
 $qr eq $qc ? ok : not_ok;
 $str =~ /$qc/ ? ok : not_ok;
 
 # test for unicode support
 {
   my $a = \( chr(256) );
-  my $b = clone( $a );
+  my $b = clone_as_utf8_bytes( $a );
   ord($$a) == ord($$b) ? ok : not_ok;
 }

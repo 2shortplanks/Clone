@@ -58,7 +58,7 @@
 require 't/dump.pl';
 
 # use Storable qw(dclone);
-use Clone qw(clone);
+use Clone::AsUTF8Bytes qw(clone_as_utf8_bytes);
 
 print "1..9\n";
 
@@ -70,7 +70,7 @@ $c->{attribute} = 'attrval';
 @a = ('first', undef, 3, -4, -3.14159, 456, 4.5,
 	$b, \$a, $a, $c, \$c, \%a);
 
-print "not " unless defined ($aref = clone(\@a));
+print "not " unless defined ($aref = clone_as_utf8_bytes(\@a));
 print "ok 1\n";
 
 $dumped = &dump(\@a);
@@ -86,7 +86,7 @@ print "ok 3\n";
 print "not " unless $got eq $dumped; 
 print "ok 4\n";
 
-package FOO; @ISA = qw(Clone);
+package FOO; @ISA = qw(Clone::AsUTF8Bytes);
 
 sub make {
 	my $self = bless {};
@@ -97,7 +97,7 @@ sub make {
 package main;
 
 $foo = FOO->make;
-print "not " unless defined($r = $foo->clone);
+print "not " unless defined($r = $foo->clone_as_utf8_bytes);
 print "ok 5\n";
 
 # print &dump($foo);
@@ -111,7 +111,7 @@ push @{$$hash{''}}, \$$hash{a};
 print "not " unless $$hash{''}[0] == \$$hash{a};
 print "ok 7\n";
 
-my $cloned = clone(clone($hash));
+my $cloned = clone_as_utf8_bytes(clone_as_utf8_bytes($hash));
 print "not " unless $$cloned{''}[0] == \$$cloned{a};
 print "ok 8\n";
 

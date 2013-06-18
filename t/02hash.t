@@ -19,7 +19,7 @@ BEGIN {
   print "1..$tests\n";
 }
 END {print "not ok 1\n" unless $loaded;}
-use Clone qw( clone );
+use Clone::AsUTF8Bytes qw( clone_as_utf8_bytes );
 $loaded = 1;
 print "ok 1\n";
 
@@ -33,7 +33,7 @@ package Test::Hash;
 
 use vars @ISA;
 
-@ISA = qw(Clone);
+@ISA = qw(Clone::AsUTF8Bytes);
 
 sub new
   {
@@ -71,8 +71,8 @@ my $a = Test::Hash->new(
 
 $a->{a} = $a;
 
-my $b = $a->clone(0);
-my $c = $a->clone(3);
+my $b = $a->clone_as_utf8_bytes(0);
+my $c = $a->clone_as_utf8_bytes(3);
 
 $a->{level} == $b->{level} ? ok : not_ok;
 
@@ -90,7 +90,7 @@ $c->{href}{href}{href} == $a->{href}{href}{href} ? ok : not_ok;
 
 my %circ = ();
 $circ{c} = \%circ;
-my $cref = clone(\%circ);
+my $cref = clone_as_utf8_bytes(\%circ);
 if ($has_data_dumper) {
   Dumper(\%circ) eq Dumper($cref) ? ok : not_ok;
 }
@@ -98,6 +98,6 @@ if ($has_data_dumper) {
 # test for unicode support
 {
   my $a = { chr(256) => 1 };
-  my $b = clone( $a );
+  my $b = clone_as_utf8_bytes( $a );
   ord( (keys(%$a))[0] ) == ord( (keys(%$b))[0] ) ? ok : not_ok;
 }
