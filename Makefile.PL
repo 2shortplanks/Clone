@@ -20,7 +20,7 @@ WriteMakefile(
       resources => {
         license    => 'http://dev.perl.org/licenses/',
         bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=Clone-AsUTF8Bytes',
-        repository => 'http://github.com/2shortplanks/Clone',
+        repository => 'http://github.com/2shortplanks/Clone-AsUTF8Bytes',
       },
     },
 );
