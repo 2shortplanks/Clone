@@ -1,9 +1,7 @@
-Changes
-Clone.pm
-Clone.xs
+AsUTF8Bytes.xs
+lib/Clone/AsUTF8Bytes.pm
 Makefile.PL
-MANIFEST
-META.yml			Module meta-data (added by MakeMaker)
+MANIFEST			This list of files
 t/01array.t
 t/02hash.t
 t/03scalar.t
@@ -15,3 +13,4 @@ t/08fieldhash.t
 t/dclone.t
 t/dump.pl
 t/tied.pl
+t/utf8.t
