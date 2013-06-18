@@ -25,12 +25,34 @@ static SV *hv_clone (SV *, SV *, HV *, int);
 static SV *av_clone (SV *, SV *, HV *, int);
 static SV *sv_clone (SV *, HV *, int);
 static SV *rv_clone (SV *, HV *, int);
+static void _sv_string_to_bytes(SV *);
 
 #ifdef DEBUG_CLONE
 #define TRACEME(a) printf("%s:%d: ",__FUNCTION__, __LINE__) && printf a;
 #else
 #define TRACEME(a)
 #endif
+
+static void _sv_string_to_bytes(SV* sv) {
+
+  TRACEME(("_sv_string_to_bytes called\n"));
+
+  /* if this actually contains a string */
+  if (SvPOK(sv)) {
+    TRACEME(("Turning scalar string into bytes!\n"));
+
+    /* if this doesn't have the utf-8 flag on already then we need to
+       upgrade this in place so that the internal byte representation of
+       this string is in UTF-8. */
+    if (!SvUTF8(sv))
+      sv_utf8_upgrade(sv);
+
+    /* flipping the flag off will turn the internal utf-8 bytes that
+       make up the string into first class characters, turning the string
+       into bytes. */
+    SvUTF8_off(sv);
+  }
+}
 
 static SV *
 hv_clone (SV * ref, SV * target, HV* hseen, int depth)
@@ -49,6 +71,7 @@ hv_clone (SV * ref, SV * target, HV* hseen, int depth)
     {
       SV *key = hv_iterkeysv (next);
       TRACEME(("clone item %s\n", SvPV_nolen(key) ));
+      _sv_string_to_bytes(key);
       hv_store_ent (clone, key, 
                 sv_clone (hv_iterval (self, next), hseen, recur), 0);
     }
@@ -163,6 +186,7 @@ sv_clone (SV * ref, HV* hseen, int depth)
       case SVt_PV:		/* 4 */
         TRACEME(("string scalar\n"));
         clone = newSVsv (ref);
+        _sv_string_to_bytes(clone);
         break;
       case SVt_PVIV:		/* 5 */
         TRACEME (("PVIV double-type\n"));
@@ -175,9 +199,11 @@ sv_clone (SV * ref, HV* hseen, int depth)
         clone = newSVsv (ref);
         break;
       case SVt_PVAV:	/* 10 */
+        TRACEME (("PVAV\n"));
         clone = (SV *) newAV();
         break;
       case SVt_PVHV:	/* 11 */
+        TRACEME (("PVHV\n"));
         clone = (SV *) newHV();
         break;
       #if PERL_VERSION <= 8
