@@ -301,12 +301,12 @@ sv_clone (SV * ref, HV* hseen, int depth)
   return clone;
 }
 
-MODULE = Clone		PACKAGE = Clone		
+MODULE = Clone::AsUTF8Bytes		PACKAGE = Clone::AsUTF8Bytes
 
 PROTOTYPES: ENABLE
 
 void
-clone(self, depth=-1)
+clone_as_utf8_bytes(self, depth=-1)
 	SV *self
 	int depth
 	PREINIT:
