@@ -10,7 +10,7 @@
 my $has_data_dumper;
 BEGIN {
   $| = 1;
-  my $tests = 9;
+  my $tests = 8;
   eval q[use Data::Dumper];
   if (!$@) {
     $has_data_dumper = 1;
@@ -86,10 +86,3 @@ my $qr = qr/$str/;
 my $qc = clone_as_utf8_bytes( $qr );
 $qr eq $qc ? ok : not_ok;
 $str =~ /$qc/ ? ok : not_ok;
-
-# test for unicode support
-{
-  my $a = \( chr(256) );
-  my $b = clone_as_utf8_bytes( $a );
-  ord($$a) == ord($$b) ? ok : not_ok;
-}

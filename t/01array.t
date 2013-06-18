@@ -10,7 +10,7 @@
 my $has_data_dumper;
 BEGIN {
   $| = 1;
-  my $tests = 6;
+  my $tests = 5;
   eval q[use Data::Dumper];
   if (!$@) {
     $has_data_dumper = 1;
@@ -78,11 +78,4 @@ $aref = clone_as_utf8_bytes(\@circ);
 
 if ($has_data_dumper) {
   Dumper(\@circ) eq Dumper($aref) ? ok : not_ok;
-}
-
-# test for unicode support
-{
-  my $a = [ chr(256) => 1 ];
-  my $b = clone_as_utf8_bytes( $a );
-  ord( $a->[0] ) == ord( $b->[0] ) ? ok : not_ok;
 }
